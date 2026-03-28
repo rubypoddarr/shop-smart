@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shopsmart_admin_en/screens/inner_screen/orders/edit_upload_product_form.dart';
+import 'package:shopsmart_admin_en/screens/inner_screen/profile_screen.dart';
 import 'consts/theme_data.dart';
 import 'providers/products_provider.dart';
 import 'providers/theme_provider.dart';
@@ -14,7 +15,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,9 @@ class MyApp extends StatelessWidget {
           routes: {
             OrdersScreenFree.routeName: (context) => const OrdersScreenFree(),
             SearchScreen.routeName: (context) => const SearchScreen(),
-            EditorUploadProductScreen.routeName:(context) =>  const EditorUploadProductScreen(),
+            EditorUploadProductScreen.routeName: (context) =>
+                const EditorUploadProductScreen(),
+            ProfileScreen.routeName: (context) => const ProfileScreen(),
           },
         );
       }),

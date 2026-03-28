@@ -10,7 +10,7 @@ class Styles {
             ? AppColors.darkScaffoldColor
             : AppColors.lightScaffoldColor,
         cardColor: isDarkTheme
-            ? const Color.fromARGB(255, 13, 6, 37)
+            ? AppColors.darkCardColor
             : AppColors.lightCardColor,
         brightness: isDarkTheme ? Brightness.dark : Brightness.light,
         appBarTheme: AppBarTheme(
@@ -21,10 +21,29 @@ class Styles {
               ? AppColors.darkScaffoldColor
               : AppColors.lightScaffoldColor,
           elevation: 0,
+          centerTitle: false,
           titleTextStyle: TextStyle(
             color: isDarkTheme ? Colors.white : Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
         ),
+        textTheme: TextTheme(
+          titleLarge: TextStyle(
+            color: isDarkTheme ? Colors.white : Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+          bodyLarge: TextStyle(
+            color: isDarkTheme ? Colors.white : Colors.black,
+          ),
+          bodyMedium: TextStyle(
+            color: isDarkTheme ? Colors.white70 : Colors.black54,
+          ),
+        ),
+        iconTheme: IconThemeData(
+          color: isDarkTheme ? Colors.white : Colors.black,
+        ),
+        dividerColor: isDarkTheme ? Colors.white10 : Colors.black12,
         inputDecorationTheme: InputDecorationTheme(
           filled: true,
           contentPadding: const EdgeInsets.all(10),

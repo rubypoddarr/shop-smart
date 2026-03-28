@@ -5,7 +5,14 @@ import '../../../widgets/subtitle_text.dart';
 import '../../../widgets/title_text.dart';
 
 class OrdersWidgetFree extends StatefulWidget {
-  const OrdersWidgetFree({super.key});
+  final String name, price, qty, imageUrl;
+  const OrdersWidgetFree({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.qty,
+    required this.imageUrl,
+  });
 
   @override
   State<OrdersWidgetFree> createState() => _OrdersWidgetFreeState();
@@ -25,7 +32,7 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
             child: FancyShimmerImage(
               height: size.width * 0.25,
               width: size.width * 0.25,
-              imageUrl: AppConstants.imageUrl,
+              imageUrl: widget.imageUrl,
             ),
           ),
           Flexible(
@@ -37,9 +44,9 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Flexible(
+                      Flexible(
                         child: TitlesTextWidget(
-                          label: 'productTitle',
+                          label: widget.name,
                           maxLines: 2,
                           fontSize: 15,
                         ),
@@ -53,15 +60,15 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
                           )),
                     ],
                   ),
-                  const Row(
+                  Row(
                     children: [
-                      TitlesTextWidget(
-                        label: 'Price:  ',
+                      const TitlesTextWidget(
+                        label: 'Price: ',
                         fontSize: 15,
                       ),
                       Flexible(
                         child: SubtitleTextWidget(
-                          label: "11.99 \$",
+                          label: widget.price,
                           fontSize: 15,
                           color: Colors.blue,
                         ),
@@ -71,8 +78,8 @@ class _OrdersWidgetFreeState extends State<OrdersWidgetFree> {
                   const SizedBox(
                     height: 5,
                   ),
-                  const SubtitleTextWidget(
-                    label: "Qty: 10",
+                  SubtitleTextWidget(
+                    label: "Qty: ${widget.qty}",
                     fontSize: 15,
                   ),
                   const SizedBox(

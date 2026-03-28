@@ -122,33 +122,47 @@ class _EditorUploadProductScreenState extends State<EditorUploadProductScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Scaffold(
-          bottomSheet: SizedBox(
-            height: kBottomNavigationBarHeight + 75,
-            child: Material(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        bottomSheet: SafeArea(
+          child: Container(
+            decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton.icon(
+              border: Border(
+                top: BorderSide(
+                  color: Theme.of(context).dividerColor,
+                  width: 0.5,
+                ),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  child: OutlinedButton.icon(
                     onPressed: () {
                       clearForm();
                     },
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear, color: Colors.red),
                     label: const Text(
-                      "Clear  ",
-                      style: TextStyle(fontSize: 20),
+                      "Clear",
+                      style: TextStyle(fontSize: 18, color: Colors.red),
                     ),
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(12),
-                        backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: Colors.red),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
-                  ElevatedButton.icon(
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
                     onPressed: () {
                       if (isEditing) {
                         _editProduct();
@@ -158,127 +172,146 @@ class _EditorUploadProductScreenState extends State<EditorUploadProductScreen> {
                     },
                     icon: const Icon(Icons.upload),
                     label: Text(
-                      isEditing ? "Upload Product" : "Edit Product",
-                      style: const TextStyle(fontSize: 20),
+                      isEditing ? "Update Product" : "Upload Product",
+                      style: const TextStyle(fontSize: 18),
                     ),
                     style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(12),
-                        // backgroundColor: Colors.red,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      backgroundColor: Theme.of(context).primaryColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
-          appBar: AppBar(
-              centerTitle: true,
-              title: TitlesTextWidget(
-                  label: isEditing ? "Edit Product" : "Add a new product")),
-          body: SafeArea(
-            child: SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    // image picker
-                    if (isEditing && productNetworkImage != null) ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          productNetworkImage!,
-                          height: size.width * 0.4,
-                          alignment: Alignment.center,
-                        ),
-                      ),
-                    ] else if (_pickedImage == null) ...[
-                      SizedBox(
-                        width: size.width * 0.4 + 10,
-                        height: size.width * 0.35,
-                        child: DottedBorder(
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              const Icon(
-                                Icons.image_outlined,
-                                color: Colors.blue,
-                                size: 50,
-                              ),
-                              TextButton(
-                                  onPressed: () {
-                                    localImagePicker();
-                                  },
-                                  child: const Center(
-                                      child: Text(
-                                    "Pick Product Image",
-                                    style: TextStyle(color: Colors.blue),
-                                  )))
-                            ],
+        ),
+        appBar: AppBar(
+          centerTitle: true,
+          title: TitlesTextWidget(
+            label: isEditing ? "Edit Product" : "Add a new product",
+          ),
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                // Image picker section
+                Center(
+                  child: Stack(
+                    children: [
+                      Container(
+                        width: size.width * 0.5,
+                        height: size.width * 0.5,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).cardColor,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: Theme.of(context).dividerColor,
+                            width: 1,
                           ),
                         ),
-                      ),
-                    ] else ...[
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(
-                          File(_pickedImage!.path),
-                          height: size.width * 0.4,
-                          alignment: Alignment.center,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: (isEditing &&
+                                  productNetworkImage != null &&
+                                  _pickedImage == null)
+                              ? Image.network(
+                                  productNetworkImage!,
+                                  fit: BoxFit.cover,
+                                )
+                              : (_pickedImage != null)
+                                  ? Image.file(
+                                      File(_pickedImage!.path),
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.image_outlined,
+                                          size: 60,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        Text(
+                                          "Pick Image",
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                         ),
                       ),
-                    ],
-                    if (_pickedImage != null ||
-                        productNetworkImage == null) ...[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          TextButton(
-                            onPressed: () {
-                              localImagePicker();
-                            },
-                            child: const Text(
-                              "Pick another Image",
-                              style: TextStyle(color: Colors.blue),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Material(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(30),
+                          child: InkWell(
+                            onTap: localImagePicker,
+                            borderRadius: BorderRadius.circular(30),
+                            child: const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.add_a_photo,
+                                color: Colors.white,
+                                size: 24,
+                              ),
                             ),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              removePickedImage();
-                            },
-                            child: const Text("Remove Image",
-                                style: TextStyle(color: Colors.red)),
-                          )
-                        ],
-                      )
+                        ),
+                      ),
+                      if (_pickedImage != null || productNetworkImage != null)
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: Material(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(30),
+                            child: InkWell(
+                              onTap: removePickedImage,
+                              borderRadius: BorderRadius.circular(30),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    // Category dropdown widget
-                    Padding(
-                      padding: const EdgeInsets.only(left: 15, right: 15),
-                      child: DropdownButtonFormField<String>(
+                  ),
+                ),
+                const SizedBox(height: 30),
+                // Form section
+                Form(
+                  key: _formkey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildLabel("Category"),
+                      DropdownButtonFormField<String>(
                         items: AppConstants.categoriesDropDownList,
                         value: _categoryValue,
                         decoration: InputDecoration(
-                          labelText: 'Choose a Category',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(
-                              color: Colors.grey, // Border color
-                              width: 1.0, // Border width
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 12.0),
-                          filled: true,
-                          fillColor: Colors.black12,
                           hintText: 'Select a category',
-                          hintStyle: const TextStyle(color: Colors.grey),
+                          fillColor: Theme.of(context).cardColor,
                         ),
                         onChanged: (String? value) {
                           setState(() {
@@ -291,134 +324,125 @@ class _EditorUploadProductScreenState extends State<EditorUploadProductScreen> {
                           }
                           return null;
                         },
-                        style: const TextStyle(
-                          color: Colors.red, // Text color
-                          fontSize: 16.0, // Font size
-                        ),
-                        elevation: 2,
-                        icon: const Icon(Icons.arrow_drop_down),
                       ),
-                    ),
-
-                    const SizedBox(
-                      height: 15,
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 0),
-                      child: Form(
-                        key: _formkey,
-                        child: Column(
-                          children: [
-                            TextFormField(
-                              controller: _titleController,
-                              key: const ValueKey("Title"),
-                              maxLength: 100,
-                              minLines: 1,
-                              maxLines: 2,
-                              keyboardType: TextInputType.multiline,
-                              textInputAction: TextInputAction.newline,
-                              decoration: const InputDecoration(
-                                hintText: "Product Title",
-                                fillColor: Colors.black12,
-                              ),
-                              validator: (value) {
-                                return MyValidators.uploadProdTexts(
-                                    value: value,
-                                    toBeReturnedString:
-                                        "Please enter a valid title");
-                              },
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Row(
+                      const SizedBox(height: 20),
+                      _buildLabel("Product Title"),
+                      TextFormField(
+                        controller: _titleController,
+                        key: const ValueKey("Title"),
+                        maxLength: 100,
+                        decoration: InputDecoration(
+                          hintText: "Enter title",
+                          fillColor: Theme.of(context).cardColor,
+                        ),
+                        validator: (value) {
+                          return MyValidators.uploadProdTexts(
+                            value: value,
+                            toBeReturnedString: "Please enter a valid title",
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Flexible(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    controller: _priceController,
-                                    key: const ValueKey('Price \$'),
-                                    keyboardType: TextInputType.number,
-                                    inputFormatters: <TextInputFormatter>[
-                                      FilteringTextInputFormatter.allow(
-                                        RegExp(r'^(\d+)?\.?\d{0,2}'),
-                                      ),
-                                    ],
-                                    decoration: const InputDecoration(
-                                        fillColor: Colors.black12,
-                                        hintText: 'Price',
-                                        prefix: SubtitleTextWidget(
-                                          label: "\$ ",
-                                          color: Colors.blue,
-                                          fontSize: 16,
-                                        )),
-                                    validator: (value) {
-                                      return MyValidators.uploadProdTexts(
-                                        value: value,
-                                        toBeReturnedString: "Price is missing",
-                                      );
-                                    },
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Flexible(
-                                  flex: 1,
-                                  child: TextFormField(
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
-                                    ],
-                                    controller: _quantityController,
-                                    keyboardType: TextInputType.number,
-                                    key: const ValueKey('Quantity'),
-                                    decoration: const InputDecoration(
-                                      fillColor: Colors.black12,
-                                      hintText: 'Qty',
+                                _buildLabel("Price (\$)"),
+                                TextFormField(
+                                  controller: _priceController,
+                                  key: const ValueKey('Price'),
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(
+                                      RegExp(r'^(\d+)?\.?\d{0,2}'),
                                     ),
-                                    validator: (value) {
-                                      return MyValidators.uploadProdTexts(
-                                        value: value,
-                                        toBeReturnedString:
-                                            "Quantity is missed",
-                                      );
-                                    },
+                                  ],
+                                  decoration: InputDecoration(
+                                    hintText: '0.00',
+                                    prefixText: '\$ ',
+                                    fillColor: Theme.of(context).cardColor,
                                   ),
+                                  validator: (value) {
+                                    return MyValidators.uploadProdTexts(
+                                      value: value,
+                                      toBeReturnedString: "Price is missing",
+                                    );
+                                  },
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 15),
-                            TextFormField(
-                              key: const ValueKey('Description'),
-                              controller: _descriptionController,
-                              minLines: 4,
-                              maxLines: 8,
-                              maxLength: 1000,
-                              textCapitalization: TextCapitalization.sentences,
-                              decoration: const InputDecoration(
-                                fillColor: Colors.black12,
-                                hintText: 'Product description',
-                              ),
-                              validator: (value) {
-                                return MyValidators.uploadProdTexts(
-                                  value: value,
-                                  toBeReturnedString: "Description is missed",
-                                );
-                              },
-                              onTap: () {},
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _buildLabel("Quantity"),
+                                TextFormField(
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly
+                                  ],
+                                  controller: _quantityController,
+                                  keyboardType: TextInputType.number,
+                                  key: const ValueKey('Quantity'),
+                                  decoration: InputDecoration(
+                                    hintText: '0',
+                                    fillColor: Theme.of(context).cardColor,
+                                  ),
+                                  validator: (value) {
+                                    return MyValidators.uploadProdTexts(
+                                      value: value,
+                                      toBeReturnedString: "Quantity is missed",
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(
-                      height: kBottomNavigationBarHeight + 10,
-                    )
-                  ],
-                )),
+                      const SizedBox(height: 20),
+                      _buildLabel("Description"),
+                      TextFormField(
+                        key: const ValueKey('Description'),
+                        controller: _descriptionController,
+                        minLines: 4,
+                        maxLines: 8,
+                        maxLength: 1000,
+                        textCapitalization: TextCapitalization.sentences,
+                        decoration: InputDecoration(
+                          hintText: 'Describe the product...',
+                          fillColor: Theme.of(context).cardColor,
+                        ),
+                        validator: (value) {
+                          return MyValidators.uploadProdTexts(
+                            value: value,
+                            toBeReturnedString: "Description is missed",
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 100), // Space for bottom sheet
+              ],
+            ),
           ),
-        ));
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+      child: SubtitleTextWidget(
+        label: label,
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+      ),
+    );
   }
 }

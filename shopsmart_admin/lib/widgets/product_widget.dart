@@ -20,15 +20,24 @@ class ProductWidget extends StatefulWidget {
 class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
-    // final productModelProvider = Provider.of<ProductModel>(context);
     final productsProvider = Provider.of<ProductsProvider>(context);
     final getCurrProduct = productsProvider.findByProdId(widget.productId);
     Size size = MediaQuery.of(context).size;
 
     return getCurrProduct == null
         ? const SizedBox.shrink()
-        : Padding(
-            padding: const EdgeInsets.all(0.0),
+        : Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.02),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -38,39 +47,49 @@ class _ProductWidgetState extends State<ProductWidget> {
                 }));
               },
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(12.0),
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(16.0),
+                      topRight: Radius.circular(16.0),
+                    ),
                     child: FancyShimmerImage(
                       imageUrl: getCurrProduct.productImage,
-                      height: size.height * 0.22,
+                      height: size.height * 0.18,
                       width: double.infinity,
+                      boxFit: BoxFit.contain,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 12.0,
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: TitlesTextWidget(
-                      label: getCurrProduct.productTitle,
-                      fontSize: 18,
-                      maxLines: 2,
+                    padding: const EdgeInsets.all(12.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TitlesTextWidget(
+                          label: getCurrProduct.productTitle,
+                          fontSize: 14,
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SubtitleTextWidget(
+                              label: "\$${getCurrProduct.productPrice}",
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                              fontSize: 16,
+                            ),
+                            Icon(
+                              Icons.edit_note,
+                              color: Theme.of(context).primaryColor,
+                              size: 20,
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    height: 6.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: SubtitleTextWidget(
-                      label: "${getCurrProduct.productPrice}\$",
-                      fontWeight: FontWeight.w600,
-                      color: Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 12.0,
                   ),
                 ],
               ),

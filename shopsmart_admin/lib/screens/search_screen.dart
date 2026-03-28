@@ -39,81 +39,106 @@ class _SearchScreenState extends State<SearchScreen> {
     List<ProductModel> productList = passedCategory == null
         ? productsProvider.products
         : productsProvider.findByCategory(categoryName: passedCategory);
+    
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         appBar: AppBar(
-          title: TitlesTextWidget(label: passedCategory ?? "Search products"),
+          title: TitlesTextWidget(label: passedCategory ?? "Search Products"),
+          elevation: 0,
         ),
         body: productList.isEmpty
             ? const Center(child: TitlesTextWidget(label: "No product found"))
             : Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Column(
                   children: [
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    TextField(
-                      controller: searchTextController,
-                      decoration: InputDecoration(
-                        hintText: "Search",
-                        prefixIcon: const Icon(Icons.search),
-                        suffixIcon: GestureDetector(
-                          onTap: () {
-                            // setState(() {
-                            FocusScope.of(context).unfocus();
-                            searchTextController.clear();
-                            // });
-                          },
-                          child: const Icon(
-                            Icons.clear,
-                            color: Colors.red,
+                    const SizedBox(height: 15.0),
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          ),
+                        ],
+                      ),
+                      child: TextField(
+                        controller: searchTextController,
+                        onChanged: (value) {
+                          setState(() {
+                            productListSearch = productsProvider.searchQuery(
+                                searchText: searchTextController.text,
+                                passedList: productList);
+                          });
+                        },
+                        onSubmitted: (value) {
+                          setState(() {
+                            productListSearch = productsProvider.searchQuery(
+                                searchText: searchTextController.text,
+                                passedList: productList);
+                          });
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Search products...",
+                          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                          suffixIcon: searchTextController.text.isNotEmpty
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      FocusScope.of(context).unfocus();
+                                      searchTextController.clear();
+                                      productListSearch.clear();
+                                    });
+                                  },
+                                  child: const Icon(
+                                    Icons.clear,
+                                    color: Colors.red,
+                                  ),
+                                )
+                              : null,
+                          filled: true,
+                          fillColor: Theme.of(context).cardColor,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 15,
                           ),
                         ),
                       ),
-                      // onChanged: (value) {
-                      //   setState(() {
-                      //     productListSearch = productsProvider.searchQuery(
-                      //         searchText: searchTextController.text);
-                      //   });
-                      // },
-                      onSubmitted: (value) {
-                        setState(() {
-                          productListSearch = productsProvider.searchQuery(
-                              searchText: searchTextController.text,
-                              passedList: productList);
-                        });
-                      },
                     ),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
+                    const SizedBox(height: 20.0),
                     if (searchTextController.text.isNotEmpty &&
                         productListSearch.isEmpty) ...[
-                      const Center(
-                        child: TitlesTextWidget(label: "No products found"),
+                      const Expanded(
+                        child: Center(
+                          child: TitlesTextWidget(label: "No products found"),
+                        ),
                       ),
-                    ],
-                    Expanded(
-                      child: DynamicHeightGridView(
-                        itemCount: searchTextController.text.isNotEmpty
-                            ? productListSearch.length
-                            : productList.length,
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 12,
-                        crossAxisSpacing: 12,
-                        builder: (context, index) {
-                          return ProductWidget(
-                            productId: searchTextController.text.isNotEmpty
-                                ? productListSearch[index].productId
-                                : productList[index].productId,
-                          );
-                        },
+                    ] else
+                      Expanded(
+                        child: DynamicHeightGridView(
+                          itemCount: searchTextController.text.isNotEmpty
+                              ? productListSearch.length
+                              : productList.length,
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 16,
+                          crossAxisSpacing: 16,
+                          builder: (context, index) {
+                            return ProductWidget(
+                              productId: searchTextController.text.isNotEmpty
+                                  ? productListSearch[index].productId
+                                  : productList[index].productId,
+                            );
+                          },
+                        ),
                       ),
-                    ),
                   ],
                 ),
               ),
