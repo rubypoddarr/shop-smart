@@ -133,18 +133,18 @@ flutter run
 ```
 
 ---
+## 👥 Maintainers
 
-## 🤝 Contribution
+This project is collaboratively built and maintained by:
 
-Let’s build something bigger than code—let’s build impact.
+* **Osama Noor**
+* **Ruby Poddar**
 
-💡 Want to:
+📧 **Osama Noor**
+**[mosamanoor17@gmail.com](mailto:mosamanoor17@gmail.com)**
 
-* Integrate **Firebase backend**?
-* Optimize performance?
-* Add new features?
-
-📧 Reach out: **[mosamanoor17@gmail.com](mailto:mosamanoor17@gmail.com)**
+📧 **Ruby Poddar**
+**[rubypoddarr@gmail.com](mailto:rubypoddarr@gmail.com)**
 
 ---
 
